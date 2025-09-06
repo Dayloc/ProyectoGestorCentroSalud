@@ -5,10 +5,8 @@ import datetime
 
 db = SQLAlchemy()
 
-# =====================
-# Usuario general
-# =====================
 
+# User
 
 class User(db.Model):
     __tablename__ = "users"
@@ -20,7 +18,6 @@ class User(db.Model):
     is_active: Mapped[bool] = mapped_column(
         Boolean(), default=True, nullable=False)
 
-    # ===== CRUD =====
     @staticmethod
     def crear(email, password, is_active=True):
         user = User(email=email, password=password, is_active=is_active)
@@ -44,9 +41,8 @@ class User(db.Model):
         }
 
 
-# =====================
 # Pacientes
-# =====================
+
 class Paciente(db.Model):
     __tablename__ = "pacientes"
 
@@ -108,9 +104,8 @@ class Paciente(db.Model):
         }
 
 
-# =====================
 # Médicos
-# =====================
+
 class Medico(db.Model):
     __tablename__ = "medicos"
 
@@ -137,9 +132,8 @@ class Medico(db.Model):
         return {"id": self.id, "nombre": self.nombre, "especialidad": self.especialidad}
 
 
-# =====================
 # Citas
-# =====================
+
 class Cita(db.Model):
     __tablename__ = "citas"
 
@@ -178,9 +172,8 @@ class Cita(db.Model):
         }
 
 
-# =====================
 # Historial Médico
-# =====================
+
 class HistorialMedico(db.Model):
     __tablename__ = "historiales"
 
@@ -209,9 +202,8 @@ class HistorialMedico(db.Model):
         return {"id": self.id, "descripcion": self.descripcion, "fecha": str(self.fecha)}
 
 
-# =====================
 # Laboratorios
-# =====================
+
 class Laboratorio(db.Model):
     __tablename__ = "laboratorios"
 
@@ -240,9 +232,8 @@ class Laboratorio(db.Model):
         return {"id": self.id, "nombre": self.nombre, "direccion": self.direccion, "especialidad": self.especialidad}
 
 
-# =====================
 # Analíticas
-# =====================
+
 class Analitica(db.Model):
     __tablename__ = "analiticas"
 
@@ -288,9 +279,8 @@ class Analitica(db.Model):
         }
 
 
-# =====================
 # Fármacos
-# =====================
+
 class Farmaco(db.Model):
     __tablename__ = "farmacos"
 
@@ -317,9 +307,8 @@ class Farmaco(db.Model):
         return {"id": self.id, "nombre": self.nombre, "descripcion": self.descripcion}
 
 
-# =====================
 # Alergias
-# =====================
+
 class AlergiaFarmaco(db.Model):
     __tablename__ = "alergias_farmacos"
 
