@@ -2,18 +2,23 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Boolean, Date, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import datetime
+
 db = SQLAlchemy()
 
 # =====================
 # Usuario general
 # =====================
+
+
 class User(db.Model):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
+    is_active: Mapped[bool] = mapped_column(
+        Boolean(), default=True, nullable=False)
 
     # ===== CRUD =====
     @staticmethod
@@ -31,6 +36,13 @@ class User(db.Model):
     def obtener_por_id(user_id):
         return User.query.get(user_id)
 
+    # ===== Serialización segura =====
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "email": self.email
+        }
+
 
 # =====================
 # Pacientes
@@ -40,18 +52,27 @@ class Paciente(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     nombre: Mapped[str] = mapped_column(String(120), nullable=False)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(120), unique=True, nullable=False)
     fecha_nacimiento: Mapped[datetime.date] = mapped_column(nullable=False)
 
-    citas: Mapped[list["Cita"]] = relationship(back_populates="paciente")
-    historial: Mapped[list["HistorialMedico"]] = relationship(back_populates="paciente")
-    alergias: Mapped[list["AlergiaFarmaco"]] = relationship(back_populates="paciente")
-    analiticas: Mapped[list["Analitica"]] = relationship(back_populates="paciente")
+    citas: Mapped[list["Cita"]] = relationship(
+        "Cita", back_populates="paciente", primaryjoin="Paciente.id==Cita.paciente_id"
+    )
+    historial: Mapped[list["HistorialMedico"]] = relationship(
+        "HistorialMedico", back_populates="paciente", primaryjoin="Paciente.id==HistorialMedico.paciente_id"
+    )
+    alergias: Mapped[list["AlergiaFarmaco"]] = relationship(
+        "AlergiaFarmaco", back_populates="paciente", primaryjoin="Paciente.id==AlergiaFarmaco.paciente_id"
+    )
+    analiticas: Mapped[list["Analitica"]] = relationship(
+        "Analitica", back_populates="paciente", primaryjoin="Paciente.id==Analitica.paciente_id"
+    )
 
-    # ===== CRUD =====
     @staticmethod
     def crear(nombre, email, fecha_nacimiento):
-        paciente = Paciente(nombre=nombre, email=email, fecha_nacimiento=fecha_nacimiento)
+        paciente = Paciente(nombre=nombre, email=email,
+                            fecha_nacimiento=fecha_nacimiento)
         db.session.add(paciente)
         db.session.commit()
         return paciente
@@ -78,6 +99,14 @@ class Paciente(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "nombre": self.nombre,
+            "email": self.email,
+            "fecha_nacimiento": str(self.fecha_nacimiento)
+        }
+
 
 # =====================
 # Médicos
@@ -89,9 +118,10 @@ class Medico(db.Model):
     nombre: Mapped[str] = mapped_column(String(120), nullable=False)
     especialidad: Mapped[str] = mapped_column(String(120), nullable=False)
 
-    citas: Mapped[list["Cita"]] = relationship(back_populates="medico")
+    citas: Mapped[list["Cita"]] = relationship(
+        "Cita", back_populates="medico", primaryjoin="Medico.id==Cita.medico_id"
+    )
 
-    # ===== CRUD =====
     @staticmethod
     def crear(nombre, especialidad):
         medico = Medico(nombre=nombre, especialidad=especialidad)
@@ -102,6 +132,9 @@ class Medico(db.Model):
     @staticmethod
     def obtener_todos():
         return Medico.query.all()
+
+    def to_dict(self):
+        return {"id": self.id, "nombre": self.nombre, "especialidad": self.especialidad}
 
 
 # =====================
@@ -114,16 +147,19 @@ class Cita(db.Model):
     fecha: Mapped[datetime.date] = mapped_column(nullable=False)
     motivo: Mapped[str] = mapped_column(Text, nullable=False)
 
-    paciente_id: Mapped[int] = mapped_column(ForeignKey("pacientes.id"), nullable=False)
-    medico_id: Mapped[int] = mapped_column(ForeignKey("medicos.id"), nullable=False)
+    paciente_id: Mapped[int] = mapped_column(
+        ForeignKey("pacientes.id"), nullable=False)
+    medico_id: Mapped[int] = mapped_column(
+        ForeignKey("medicos.id"), nullable=False)
 
-    paciente: Mapped["Paciente"] = relationship(back_populates="citas")
-    medico: Mapped["Medico"] = relationship(back_populates="citas")
+    paciente: Mapped["Paciente"] = relationship(
+        "Paciente", back_populates="citas")
+    medico: Mapped["Medico"] = relationship("Medico", back_populates="citas")
 
-    # ===== CRUD =====
     @staticmethod
     def crear(fecha, motivo, paciente_id, medico_id):
-        cita = Cita(fecha=fecha, motivo=motivo, paciente_id=paciente_id, medico_id=medico_id)
+        cita = Cita(fecha=fecha, motivo=motivo,
+                    paciente_id=paciente_id, medico_id=medico_id)
         db.session.add(cita)
         db.session.commit()
         return cita
@@ -131,6 +167,15 @@ class Cita(db.Model):
     @staticmethod
     def obtener_todas():
         return Cita.query.all()
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "fecha": str(self.fecha),
+            "motivo": self.motivo,
+            "paciente_id": self.paciente_id,
+            "medico_id": self.medico_id
+        }
 
 
 # =====================
@@ -143,13 +188,15 @@ class HistorialMedico(db.Model):
     descripcion: Mapped[str] = mapped_column(Text, nullable=False)
     fecha: Mapped[datetime.date] = mapped_column(nullable=False)
 
-    paciente_id: Mapped[int] = mapped_column(ForeignKey("pacientes.id"), nullable=False)
-    paciente: Mapped["Paciente"] = relationship(back_populates="historial")
+    paciente_id: Mapped[int] = mapped_column(
+        ForeignKey("pacientes.id"), nullable=False)
+    paciente: Mapped["Paciente"] = relationship(
+        "Paciente", back_populates="historial")
 
-    # ===== CRUD =====
     @staticmethod
     def crear(descripcion, fecha, paciente_id):
-        historial = HistorialMedico(descripcion=descripcion, fecha=fecha, paciente_id=paciente_id)
+        historial = HistorialMedico(
+            descripcion=descripcion, fecha=fecha, paciente_id=paciente_id)
         db.session.add(historial)
         db.session.commit()
         return historial
@@ -157,6 +204,9 @@ class HistorialMedico(db.Model):
     @staticmethod
     def obtener_por_paciente(paciente_id):
         return HistorialMedico.query.filter_by(paciente_id=paciente_id).all()
+
+    def to_dict(self):
+        return {"id": self.id, "descripcion": self.descripcion, "fecha": str(self.fecha)}
 
 
 # =====================
@@ -170,12 +220,14 @@ class Laboratorio(db.Model):
     direccion: Mapped[str] = mapped_column(String(200), nullable=True)
     especialidad: Mapped[str] = mapped_column(String(120), nullable=True)
 
-    analiticas: Mapped[list["Analitica"]] = relationship(back_populates="laboratorio")
+    analiticas: Mapped[list["Analitica"]] = relationship(
+        "Analitica", back_populates="laboratorio", primaryjoin="Laboratorio.id==Analitica.laboratorio_id"
+    )
 
-    # ===== CRUD =====
     @staticmethod
     def crear(nombre, direccion=None, especialidad=None):
-        lab = Laboratorio(nombre=nombre, direccion=direccion, especialidad=especialidad)
+        lab = Laboratorio(nombre=nombre, direccion=direccion,
+                          especialidad=especialidad)
         db.session.add(lab)
         db.session.commit()
         return lab
@@ -183,6 +235,9 @@ class Laboratorio(db.Model):
     @staticmethod
     def obtener_todos():
         return Laboratorio.query.all()
+
+    def to_dict(self):
+        return {"id": self.id, "nombre": self.nombre, "direccion": self.direccion, "especialidad": self.especialidad}
 
 
 # =====================
@@ -196,13 +251,16 @@ class Analitica(db.Model):
     resultado: Mapped[str] = mapped_column(Text, nullable=False)
     fecha: Mapped[datetime.date] = mapped_column(nullable=False)
 
-    paciente_id: Mapped[int] = mapped_column(ForeignKey("pacientes.id"), nullable=False)
-    laboratorio_id: Mapped[int] = mapped_column(ForeignKey("laboratorios.id"), nullable=False)
+    paciente_id: Mapped[int] = mapped_column(
+        ForeignKey("pacientes.id"), nullable=False)
+    laboratorio_id: Mapped[int] = mapped_column(
+        ForeignKey("laboratorios.id"), nullable=False)
 
-    paciente: Mapped["Paciente"] = relationship(back_populates="analiticas")
-    laboratorio: Mapped["Laboratorio"] = relationship(back_populates="analiticas")
+    paciente: Mapped["Paciente"] = relationship(
+        "Paciente", back_populates="analiticas")
+    laboratorio: Mapped["Laboratorio"] = relationship(
+        "Laboratorio", back_populates="analiticas")
 
-    # ===== CRUD =====
     @staticmethod
     def crear(tipo, resultado, fecha, paciente_id, laboratorio_id):
         analitica = Analitica(tipo=tipo, resultado=resultado, fecha=fecha,
@@ -219,6 +277,16 @@ class Analitica(db.Model):
     def obtener_todas():
         return Analitica.query.all()
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "tipo": self.tipo,
+            "resultado": self.resultado,
+            "fecha": str(self.fecha),
+            "paciente_id": self.paciente_id,
+            "laboratorio_id": self.laboratorio_id
+        }
+
 
 # =====================
 # Fármacos
@@ -230,9 +298,10 @@ class Farmaco(db.Model):
     nombre: Mapped[str] = mapped_column(String(120), nullable=False)
     descripcion: Mapped[str] = mapped_column(Text, nullable=True)
 
-    alergias: Mapped[list["AlergiaFarmaco"]] = relationship(back_populates="farmaco")
+    alergias: Mapped[list["AlergiaFarmaco"]] = relationship(
+        "AlergiaFarmaco", back_populates="farmaco", primaryjoin="Farmaco.id==AlergiaFarmaco.farmaco_id"
+    )
 
-    # ===== CRUD =====
     @staticmethod
     def crear(nombre, descripcion=None):
         f = Farmaco(nombre=nombre, descripcion=descripcion)
@@ -244,6 +313,9 @@ class Farmaco(db.Model):
     def obtener_todos():
         return Farmaco.query.all()
 
+    def to_dict(self):
+        return {"id": self.id, "nombre": self.nombre, "descripcion": self.descripcion}
+
 
 # =====================
 # Alergias
@@ -254,16 +326,20 @@ class AlergiaFarmaco(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     nivel_reaccion: Mapped[str] = mapped_column(String(50), nullable=False)
 
-    paciente_id: Mapped[int] = mapped_column(ForeignKey("pacientes.id"), nullable=False)
-    farmaco_id: Mapped[int] = mapped_column(ForeignKey("farmacos.id"), nullable=False)
+    paciente_id: Mapped[int] = mapped_column(
+        ForeignKey("pacientes.id"), nullable=False)
+    farmaco_id: Mapped[int] = mapped_column(
+        ForeignKey("farmacos.id"), nullable=False)
 
-    paciente: Mapped["Paciente"] = relationship(back_populates="alergias")
-    farmaco: Mapped["Farmaco"] = relationship(back_populates="alergias")
+    paciente: Mapped["Paciente"] = relationship(
+        "Paciente", back_populates="alergias")
+    farmaco: Mapped["Farmaco"] = relationship(
+        "Farmaco", back_populates="alergias")
 
-    # ===== CRUD =====
     @staticmethod
     def crear(paciente_id, farmaco_id, nivel_reaccion):
-        a = AlergiaFarmaco(paciente_id=paciente_id, farmaco_id=farmaco_id, nivel_reaccion=nivel_reaccion)
+        a = AlergiaFarmaco(paciente_id=paciente_id,
+                           farmaco_id=farmaco_id, nivel_reaccion=nivel_reaccion)
         db.session.add(a)
         db.session.commit()
         return a
@@ -271,3 +347,6 @@ class AlergiaFarmaco(db.Model):
     @staticmethod
     def obtener_por_paciente(paciente_id):
         return AlergiaFarmaco.query.filter_by(paciente_id=paciente_id).all()
+
+    def to_dict(self):
+        return {"id": self.id, "nivel_reaccion": self.nivel_reaccion, "paciente_id": self.paciente_id, "farmaco_id": self.farmaco_id}
