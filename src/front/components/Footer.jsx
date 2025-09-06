@@ -5,7 +5,7 @@ export function Footer() {
 	return (
 			//Footer en Acordeón
 
-		<footer className="bg-white border-top py-4 mt-auto">
+		<footer className="footer-custom border-top py-4 mt-auto">
 			<div className="container">
 				<div className="row g-4">
 					{/* Dirección física */}

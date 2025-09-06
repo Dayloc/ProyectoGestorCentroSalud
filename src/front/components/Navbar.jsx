@@ -4,7 +4,7 @@ export function Navbar() {
 
 	return (
 			
-		<nav className="navbar navbar-expand-md navbar-light bg-white border-bottom">
+		<nav className="navbar navbar-expand-md navbar-light navbar-custom border-bottom">
 			<div className="container">
 				<a className="navbar-brand d-flex align-items-center gap-2" href="/">
 					{/*LOGO*/}
