@@ -32,6 +32,15 @@ class User(db.Model):
     @staticmethod
     def obtener_por_id(user_id):
         return User.query.get(user_id)
+    
+    @staticmethod
+    def obtener_por_email(user_email):
+        return User.query.filter_by(email=user_email).first()
+    
+
+
+
+
 
     # ===== Serialización segura =====
     def to_dict(self):
@@ -51,6 +60,7 @@ class Paciente(db.Model):
     email: Mapped[str] = mapped_column(
         String(120), unique=True, nullable=False)
     fecha_nacimiento: Mapped[datetime.date] = mapped_column(nullable=False)
+    password: Mapped[str] = mapped_column(nullable=False)
 
     citas: Mapped[list["Cita"]] = relationship(
         "Cita", back_populates="paciente", primaryjoin="Paciente.id==Cita.paciente_id"
@@ -66,9 +76,9 @@ class Paciente(db.Model):
     )
 
     @staticmethod
-    def crear(nombre, email, fecha_nacimiento):
+    def crear(nombre, email, fecha_nacimiento,password):
         paciente = Paciente(nombre=nombre, email=email,
-                            fecha_nacimiento=fecha_nacimiento)
+                            fecha_nacimiento=fecha_nacimiento, password=password)
         db.session.add(paciente)
         db.session.commit()
         return paciente
@@ -90,7 +100,20 @@ class Paciente(db.Model):
             self.fecha_nacimiento = fecha_nacimiento
         db.session.commit()
         return self
+    
+    @staticmethod
+    def obtener_por_email(paciente_email):
+        return Paciente.query.filter_by(email=paciente_email).first()
 
+    def actualizar(self, nombre=None, email=None, fecha_nacimiento=None):
+        if nombre:
+            self.nombre = nombre
+        if email:
+            self.email = email
+        if fecha_nacimiento:
+            self.fecha_nacimiento = fecha_nacimiento
+        db.session.commit()
+        return self
     def eliminar(self):
         db.session.delete(self)
         db.session.commit()
@@ -111,15 +134,17 @@ class Medico(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     nombre: Mapped[str] = mapped_column(String(120), nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(120), unique=True, nullable=False)
     especialidad: Mapped[str] = mapped_column(String(120), nullable=False)
-
+    password: Mapped[str] = mapped_column(nullable=False)
     citas: Mapped[list["Cita"]] = relationship(
         "Cita", back_populates="medico", primaryjoin="Medico.id==Cita.medico_id"
     )
 
     @staticmethod
-    def crear(nombre, especialidad):
-        medico = Medico(nombre=nombre, especialidad=especialidad)
+    def crear(nombre, especialidad,password,email):
+        medico = Medico(nombre=nombre, especialidad=especialidad, password=password,email=email)
         db.session.add(medico)
         db.session.commit()
         return medico
@@ -127,9 +152,13 @@ class Medico(db.Model):
     @staticmethod
     def obtener_todos():
         return Medico.query.all()
+    
+    @staticmethod
+    def obtener_por_email(medico_email):
+        return Medico.query.filter_by(email=medico_email).first()
 
     def to_dict(self):
-        return {"id": self.id, "nombre": self.nombre, "especialidad": self.especialidad}
+        return {"id": self.id, "nombre": self.nombre, "especialidad": self.especialidad,"email":self.email}
 
 
 # Citas
