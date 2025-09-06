@@ -1,17 +1,40 @@
 import { Link } from "react-router-dom";
 
-export const Navbar = () => {
+export function Navbar() {
 
 	return (
-		<nav className="navbar navbar-light bg-light">
+			
+		<nav className="navbar navbar-expand-md navbar-light bg-white border-bottom">
 			<div className="container">
-				<Link to="/">
-					<span className="navbar-brand mb-0 h1">React Boilerplate</span>
-				</Link>
-				<div className="ml-auto">
-					<Link to="/demo">
-						<button className="btn btn-primary">Check the Context in action</button>
-					</Link>
+				<a className="navbar-brand d-flex align-items-center gap-2" href="/">
+					{/*LOGO*/}
+					<span className="d-inline-block rounded-circle bg-primary" style={{ width: 28, height: 28}} aria-hidden />
+					<span className="fw-semibold">MediGest</span>
+				</a>
+
+				<ul className="navbar-nav ms-3">
+					<li className="nav-item">
+						<a className="nav-link active" aria-current="page" href="/">Inicio</a>
+					</li>
+				</ul>
+				<button
+					className="navbar-toggler"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target="#mainNav"
+					aria-controls="mainNav"
+					aria-expanded="false"
+					aria-label="Alternar navegación"
+				>
+					<span className="navbar-toggler-icon"></span>
+				</button>
+
+				<div className="collapse navbar-collapse" id="mainNav">
+					<ul className="navbar-nav ms-auto align-items-md-center">
+						<li className="nav-item ms-md-2">
+							<a className="btn btn-primary" href="/login">Login</a>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</nav>
