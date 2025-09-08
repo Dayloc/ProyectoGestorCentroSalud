@@ -368,3 +368,32 @@ class AlergiaFarmaco(db.Model):
 
     def to_dict(self):
         return {"id": self.id, "nivel_reaccion": self.nivel_reaccion, "paciente_id": self.paciente_id, "farmaco_id": self.farmaco_id}
+
+
+class Autorizados(db.Model):
+    
+    __tablename__ = "autorizados"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    nombre: Mapped[str] = mapped_column(String(100), nullable=False)
+    apellidos: Mapped[str] = mapped_column(String(150), nullable=False)
+    codigo: Mapped[str] = mapped_column(String(50), unique=True, nullable=True)  # opcional, como matrícula médica
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

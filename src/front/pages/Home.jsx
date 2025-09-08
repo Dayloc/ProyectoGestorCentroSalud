@@ -1,6 +1,7 @@
 import React, { useEffect } from "react"
 import { getDataUsers } from "../services/fetchs.js";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import CheckBox from "../components/CheckBox.jsx";
 
 export const Home = () => {
 
@@ -53,6 +54,7 @@ export const Home = () => {
 					</span>
 				)}
 			</div>
+			<CheckBox/>
 		</div>
 	);
 }; 
