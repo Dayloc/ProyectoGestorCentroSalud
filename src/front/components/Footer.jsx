@@ -1,7 +1,9 @@
 import React from "react";
 
 
-export function Footer() {
+const Footer = ()=> {
+
+	
 	return (
 			//Footer en Acordeón
 
@@ -106,3 +108,4 @@ export function Footer() {
 		</footer>
 	);
 }
+export default Footer
