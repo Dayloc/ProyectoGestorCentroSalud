@@ -1,12 +1,7 @@
 import React from "react";
 
-
-const Footer = ()=> {
-
-	
+export const Footer = () => {
 	return (
-			//Footer en Acordeón
-
 		<footer className="footer-custom border-top py-4 mt-auto">
 			<div className="container">
 				<div className="row g-4">
@@ -20,29 +15,28 @@ const Footer = ()=> {
 							aria-expanded="false"
 							aria-controls="footerDireccion"
 						>
-						<h6 className="text-uppercase small fw-bold mb-2">📍 Dirección Física</h6>
+							<h6 className="text-uppercase small fw-bold mb-2">📍 Dirección Física</h6>
 						</button>
 						<div id="footerDireccion" className="collapse">
 							<ul className="list-unstyled small mb-0">
 								<li>Clínica VidaPlena</li>
 								<li>#</li>
-								<li>#</li>								
+								<li>#</li>
 							</ul>
 						</div>
 					</div>
 
-						{/* Teléfono / WhatsApp */}
-
+					{/* Teléfono / WhatsApp */}
 					<div className="col-12 col-md-3">
 						<button
 							className="btn w-100 text-start p-0 border-0 bg-transparent"
 							type="button"
-		   					data-bs-toggle="collapse"
+							data-bs-toggle="collapse"
 							data-bs-target="#footerTelefono"
 							aria-expanded="false"
 							aria-controls="footerTelefono"
 						>
-						<h6 className="text-uppercase small fw-bold mb-2">📞 Teléfono/WhatsApp</h6>
+							<h6 className="text-uppercase small fw-bold mb-2">📞 Teléfono/WhatsApp</h6>
 						</button>
 						<div id="footerTelefono" className="collapse">
 							<ul className="list-unstyled small mb-0">
@@ -52,8 +46,7 @@ const Footer = ()=> {
 						</div>
 					</div>
 
-						{/* Correo Electrónico */}
-
+					{/* Correo Electrónico */}
 					<div className="col-12 col-md-3">
 						<button
 							className="btn w-100 text-start p-0 border-0 bg-transparent"
@@ -63,38 +56,37 @@ const Footer = ()=> {
 							aria-expanded="false"
 							aria-controls="footerCorreo"
 						>
-						 	<h6 className="text-uppercase small fw-bold mb-3">📧 Correo Electrónico</h6>
-					 	</button>
-					 	<div id="footerCorreo" className="collapse">
-						 	<ul className="list-unstyled small mb-0">
-							 	<li>info@medigest.app</li>
-							 	<li>soporte@medigest.app</li>
-						 	</ul>
-					 	</div>
-				 	</div>
+							<h6 className="text-uppercase small fw-bold mb-3">📧 Correo Electrónico</h6>
+						</button>
+						<div id="footerCorreo" className="collapse">
+							<ul className="list-unstyled small mb-0">
+								<li>info@medigest.app</li>
+								<li>soporte@medigest.app</li>
+							</ul>
+						</div>
+					</div>
 
-					 	{/* Redes Sociales */}
-
-				 	<div className="col-12 col-md-3">
-					 	<button
-						 	className="btn w-100 text-start p-0 border-0 bg-transparent"
-						 	type="button"
-						 	data-bs-toggle="collapse"
-						 	data-bs-target="#footerRedes"
-						 	aria-expanded="false"
-						 	aria-controls="footerRedes"
-					 	>
-						 	<h6 className="text-uppercase small fw-bold mb-3">🌐 Redes Sociales</h6>
-					 	</button>
-					 	<div id="footerRedes" className="collapse">
-						 	<ul className="list-unstyled small mb-0">
-							 	<li><a href="#" className="link-secondary text-decoration-none">Instagram</a></li>
-							 	<li><a href="#" className="link-secondary text-decoration-none">Facebook</a></li>
-							 	<li><a href="#" className="link-secondary text-decoration-none">x/Twitter</a></li>
-						 	</ul>
-					 	</div>
-				 	</div>
-			 	</div>
+					{/* Redes Sociales */}
+					<div className="col-12 col-md-3">
+						<button
+							className="btn w-100 text-start p-0 border-0 bg-transparent"
+							type="button"
+							data-bs-toggle="collapse"
+							data-bs-target="#footerRedes"
+							aria-expanded="false"
+							aria-controls="footerRedes"
+						>
+							<h6 className="text-uppercase small fw-bold mb-3">🌐 Redes Sociales</h6>
+						</button>
+						<div id="footerRedes" className="collapse">
+							<ul className="list-unstyled small mb-0">
+								<li><a href="#" className="link-secondary text-decoration-none">Instagram</a></li>
+								<li><a href="#" className="link-secondary text-decoration-none">Facebook</a></li>
+								<li><a href="#" className="link-secondary text-decoration-none">x/Twitter</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
 
 				<div className="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4 pt-3 border-top small-secondary">
 					<div>® {new Date().getFullYear()} VidaPlena. Todos los derechos reservados.</div>
@@ -104,8 +96,19 @@ const Footer = ()=> {
 						<a href="#" className="link-secondary text-decoration-none">Cookies</a>
 					</div>
 				</div>
+
+				{/* Mensaje de créditos (de la versión main) */}
+				<div className="text-center mt-3">
+					<p className="small mb-0">
+						Made with <i className="fa fa-heart text-danger" /> by{" "}
+						<a href="https://github.com/tuUsuario" target="_blank" rel="noopener noreferrer" className="text-decoration-none">
+							MediGest Team
+						</a>
+					</p>
+				</div>
 			</div>
 		</footer>
 	);
-}
-export default Footer
+};
+
+
