@@ -1,0 +1,16 @@
+.navbar-custom {
+  background-color: #47a4df; /* azul tipo Bootstrap primary */
+}
+
+.footer-custom {
+  background-color: #47a4df; /* un azul más oscuro para diferenciar */
+  color: #ffffff;
+}
+
+.footer-custom a {
+  color: #ffffff;
+}
+
+.footer-custom a:hover {
+  text-decoration: underline;
+}
