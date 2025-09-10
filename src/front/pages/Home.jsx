@@ -1,39 +1,17 @@
 import React, { useEffect } from "react";
 import Fondo1 from "../assets/img/Fondo1.jpg";
-import { getDataUsers } from "../services/fetchs.js";
+import { loadMessage } from "../services/fetchs.js";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
 export function Home() {
 	const { store, dispatch } = useGlobalReducer();
 
-	const loadMessage = async () => {
-		try {
-			const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
-			if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file");
-
-			const response = await fetch(backendUrl + "/api/hello");
-			const data = await response.json();
-
-			if (response.ok) dispatch({ type: "set_hello", payload: data.message });
-
-			return data;
-		} catch (error) {
-			if (error.message)
-				throw new Error(
-					`Could not fetch the message from the backend.
-					Please check if the backend is running and the backend port is public.`
-				);
-		}
-	};
 
 	useEffect(() => {
-		loadMessage();
+		loadMessage(dispatch);
 	}, []);
 
-	useEffect(() => {
-		getDataUsers();
-	}, []);
+	
 
 	return (
 		<section
@@ -53,7 +31,7 @@ export function Home() {
 							<h1 className="display-3 fw-bold">Bienvenido a MediGest</h1>
 							<p className="lead">
 								{store.message ? (
-									<span>{store.message}</span>
+									<span className="text-success">{store.message}</span>
 								) : (
 									<span className="text-danger">
 										Loading message from the backend (make sure your python 🐍 backend is running)...

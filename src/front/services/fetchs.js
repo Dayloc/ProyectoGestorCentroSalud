@@ -1,17 +1,23 @@
 const urlBase = import.meta.env.VITE_BACKEND_URL;
 
-// Este es un fetch de prueba para que tengan un una guía, utilicen urlBase para que no tengan conflictos a la hora de hacerlos
-export const getDataUsers = async () => {
-  try {
-    const response = await fetch(`${urlBase}/api/users`);
-    if (!response.ok) {
-      throw new Error("Error al obtener los datos");
-    }
-    const data = await response.json();
-    console.log(data);
+export const loadMessage = async (dispatch) => {
+		try {
+			const backendUrl = urlBase;
 
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-};
+			if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file");
+
+			const response = await fetch(backendUrl + "/api/hello");
+			const data = await response.json();
+
+			if (response.ok) 
+				dispatch({ type: "update_menssage", payload: data.message });
+
+			return data;
+		} catch (error) {
+			if (error.message)
+				throw new Error(
+					`Could not fetch the message from the backend.
+					Please check if the backend is running and the backend port is public.`
+				);
+		}
+	};
