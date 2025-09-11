@@ -14,3 +14,16 @@
 .footer-custom a:hover {
   text-decoration: underline;
 }
+
+
+body{
+   background: url('./assets/img/Fondo1.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+.card {
+  background-color: rgba(255, 255, 255, 0.225); 
+  backdrop-filter: blur(6px); 
+}

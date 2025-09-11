@@ -1,6 +1,13 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const  Navbar = () => {
+
+	const navigate = useNavigate()
+	const navega = ()=>{
+		navigate("/login")
+
+	}
 
 	return (
 			
@@ -32,7 +39,7 @@ const  Navbar = () => {
 				<div className="collapse navbar-collapse" id="mainNav">
 					<ul className="navbar-nav ms-auto align-items-md-center">
 						<li className="nav-item ms-md-2">
-							<a className="btn btn-primary" href="/login">Login</a>
+							<button className="btn btn-primary" onClick={()=>navega()}>Login</button>
 						</li>
 					</ul>
 				</div>

@@ -3,6 +3,7 @@ import Fondo1 from "../assets/img/Fondo1.jpg";
 import { loadMessage } from "../services/fetchs.js";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
+
 export function Home() {
 	const { store, dispatch } = useGlobalReducer();
 
@@ -11,7 +12,7 @@ export function Home() {
 		loadMessage(dispatch);
 	}, []);
 
-	
+
 
 	return (
 		<section
@@ -25,6 +26,7 @@ export function Home() {
 			}}
 		>
 			<div className="container py-4 py-md-5">
+			
 				<div className="row justify-content-center">
 					<div className="col-12 col-lg-10">
 						<div className="container text-center bg-dark bg-opacity-25 p-5 rounded-4 p-4">
