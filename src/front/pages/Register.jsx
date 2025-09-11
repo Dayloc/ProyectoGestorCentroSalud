@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { registerMedico, registerPaciente } from "../services/fetchs";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const [roll, setRoll] = useState("paciente");
@@ -7,8 +9,10 @@ function Register() {
     email: "",
     fecha_nacimiento: "",
     password: "",
-    rol: "paciente",
+    especialidad: "",
   });
+
+  const navigate = useNavigate();
 
   // Manejar cambios en los inputs
   const handleChange = (e) => {
@@ -19,11 +23,17 @@ function Register() {
     });
   };
 
- 
-  const handleSubmit = () => {
-    console.log("Datos a enviar:", datos);
-    // Aquí haces el fetch/axios POST al backend
-    // fetch("/api/register", {method:"POST", body: JSON.stringify(datos)})
+  const handleSubmit = async () => {
+    try {
+      if (roll === "paciente") {
+        await registerPaciente(datos);
+      } else {
+        await registerMedico(datos);
+      }
+      navigate("/login");
+    } catch (error) {
+      console.error("Error en el registro:", error);
+    }
   };
 
   return (
@@ -39,10 +49,7 @@ function Register() {
             name="radioDefault"
             id="radioDefault1"
             value="paciente"
-            onChange={() => {
-              setRoll("paciente");
-              setDatos({ ...datos, rol: "paciente" });
-            }}
+            onChange={() => setRoll("paciente")}
             checked={roll === "paciente"}
           />
           <label className="form-check-label" htmlFor="radioDefault1">
@@ -57,10 +64,7 @@ function Register() {
             name="radioDefault"
             id="radioDefault2"
             value="medico"
-            onChange={() => {
-              setRoll("medico");
-              setDatos({ ...datos, rol: "medico" });
-            }}
+            onChange={() => setRoll("medico")}
             checked={roll === "medico"}
           />
           <label className="form-check-label" htmlFor="radioDefault2">
@@ -87,6 +91,7 @@ function Register() {
             value={datos.email}
             onChange={handleChange}
           />
+
           {roll === "paciente" && (
             <input
               className="form-control mb-3"
@@ -97,6 +102,18 @@ function Register() {
               onChange={handleChange}
             />
           )}
+
+          {roll === "medico" && (
+            <input
+              className="form-control mb-3"
+              placeholder="Especialidad..."
+              type="text"
+              name="especialidad"
+              value={datos.especialidad}
+              onChange={handleChange}
+            />
+          )}
+
           <input
             className="form-control mb-3"
             placeholder="Password..."
@@ -106,10 +123,7 @@ function Register() {
             onChange={handleChange}
           />
 
-          <button
-            className="btn btn-primary w-100"
-            onClick={handleSubmit}
-          >
+          <button className="btn btn-primary w-100" onClick={handleSubmit}>
             Guardar
           </button>
         </div>
