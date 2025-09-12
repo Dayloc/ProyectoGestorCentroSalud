@@ -1,12 +1,9 @@
 
 import React,{useEffect} from 'react'
-import { getMedico } from '../services/fetchs';
+
 
 function ComponenteProtegido() {
 
-useEffect(() => {
-    getMedico()
-}, []);
 
 
 
