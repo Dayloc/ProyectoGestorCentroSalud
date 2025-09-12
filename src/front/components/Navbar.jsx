@@ -8,6 +8,13 @@ const  Navbar = () => {
 		navigate("/login")
 
 	}
+	const token = localStorage.getItem("token"); 
+
+	const logout = ()=>{
+		localStorage.removeItem("token");
+		navega()
+
+	}
 
 	return (
 			
@@ -35,14 +42,22 @@ const  Navbar = () => {
 				>
 					<span className="navbar-toggler-icon"></span>
 				</button>
-
-				<div className="collapse navbar-collapse" id="mainNav">
+				{
+					token ? <div className="collapse navbar-collapse" id="mainNav">
+					<ul className="navbar-nav ms-auto align-items-md-center">
+						<li className="nav-item ms-md-2">
+							<button className="btn btn-primary" onClick={()=>logout()}>Logout</button>
+						</li>
+					</ul>
+				</div>:<div className="collapse navbar-collapse" id="mainNav">
 					<ul className="navbar-nav ms-auto align-items-md-center">
 						<li className="nav-item ms-md-2">
 							<button className="btn btn-primary" onClick={()=>navega()}>Login</button>
 						</li>
 					</ul>
 				</div>
+				}
+				
 			</div>
 		</nav>
 	);

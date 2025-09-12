@@ -133,3 +133,62 @@ export const loginMedico = async (datos) => {
     throw error;
   }
 };
+
+// get paciente
+export const getPaciente = async (dispatch) => {
+  try {
+    const token = localStorage.getItem("token"); 
+
+    const response = await fetch(`${urlBase}api/paciente/me`, { 
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}` 
+      },    
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al obtener datos del paciente");
+    }
+
+    const data = await response.json();
+     dispatch({
+      type:"Save_Paciente",
+      payload:data
+    })
+    
+    return data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+// get médico
+export const getMedico = async (dispatch) => {
+  try {
+    const token = localStorage.getItem("token"); 
+
+    const response = await fetch(`${urlBase}api/medico/me`, { 
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}` 
+      },    
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al obtener datos del paciente");
+    }
+
+    const data = await response.json();
+    dispatch({
+      type:"Save_Medico",
+      payload:data
+    })
+    
+    return data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};

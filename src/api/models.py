@@ -160,6 +160,9 @@ class Medico(db.Model):
     def to_dict(self):
         return {"id": self.id, "nombre": self.nombre, "especialidad": self.especialidad,"email":self.email}
 
+    @staticmethod
+    def obtener_por_id(medico_id):   
+        return Medico.query.get(medico_id)
 
 # Citas
 
