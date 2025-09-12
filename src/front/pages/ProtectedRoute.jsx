@@ -9,7 +9,7 @@ function ProtectedRoute({ children }) {
     return <Navigate to="/login" replace />;
   }
 
-  // si hay token → muestra la ruta protegida
+  
   return children;
 }
 

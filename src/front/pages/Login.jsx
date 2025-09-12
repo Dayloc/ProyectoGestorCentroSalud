@@ -25,10 +25,12 @@ function Login() {
     try {
       if (roll === "paciente") {
         await loginPaciente(datos);
+        navigate("/dashboardPaciente"); // redirigir a donde quieras tras login
       } else {
         await loginMedico(datos);
+        navigate("/dashboardMedico"); // redirigir a donde quieras tras login
       }
-      navigate("/dashboard"); // redirigir a donde quieras tras login
+    
     } catch (error) {
       alert("Error en las credenciales");
     }
