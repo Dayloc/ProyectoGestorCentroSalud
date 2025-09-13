@@ -159,7 +159,7 @@ def get_mi_medico():
     }), 200
 
 @api.route("/medicos", methods=["GET"])
-@jwt_required()
+
 def get_medicos():
     medicos = Medico.obtener_todos()
     return jsonify([{"id": m.id, "nombre": m.nombre, "especialidad": m.especialidad} for m in medicos])

@@ -192,3 +192,35 @@ export const getMedico = async (dispatch) => {
     return null;
   }
 };
+export const getEspecialidades = async(dispatch)=>{
+  try {
+    const response = await fetch(`${urlBase}api/medicos`)
+    if(!response.ok){
+      throw new Error("Error al optener los datos",response.status);      
+    }
+    const data  = await response.json()
+    dispatch({
+      type:"Especialidades",
+      payload: data.map(medico=>medico.especialidad)
+    })
+  } catch (error) {
+    console.error("Error", error)
+  }
+
+}
+export const getMedicosLista = async(dispatch)=>{
+  try {
+    const response = await fetch(`${urlBase}api/medicos`)
+    if(!response.ok){
+      throw new Error("Error al optener los datos",response.status);      
+    }
+    const data  = await response.json()
+    dispatch({
+      type:"Medicos",
+      payload: data.map( medico=>medico )
+    })
+  } catch (error) {
+    console.error("Error", error)
+  }
+
+}

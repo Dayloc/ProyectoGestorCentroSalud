@@ -15,7 +15,7 @@ export const Footer = () => {
 							aria-expanded="false"
 							aria-controls="footerDireccion"
 						>
-							<h6 className="text-uppercase small fw-bold mb-2">📍 Dirección Física</h6>
+							<h6 className="text-uppercase small fw-bold mb-2 ">📍 Dirección Física</h6>
 						</button>
 						<div id="footerDireccion" className="collapse">
 							<ul className="list-unstyled small mb-0">

@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import logo from "./../assets/img/logo!!.png"
 
 const  Navbar = () => {
 
@@ -35,32 +36,29 @@ const  Navbar = () => {
 			
 		<nav className="navbar navbar-expand-md navbar-light navbar-custom border-bottom">
 			<div className="container">
-				<Link className="navbar-brand d-flex align-items-center gap-2" href="/">
-					{/*LOGO*/}
-					<span className="d-inline-block rounded-circle bg-primary" style={{ width: 28, height: 28}} aria-hidden />
-					<span className="fw-semibold">MediGest</span>
+				
+					
+					<Link className="navbar-brand d-flex flex-column align-items-center gap-2" href="/">
+					<img className="logo" src={logo} alt="" />
+					
 				</Link>
-
-				<button
-					className="navbar-toggler"
-					type="button"
-					data-bs-toggle="collapse"
-					data-bs-target="#mainNav"
-					aria-controls="mainNav"
-					aria-expanded="false"
-					aria-label="Alternar navegación"
-				>
-					<span className="navbar-toggler-icon"></span>
-				</button>
+				
+				
+			
+				
+		<Link className="nav-link" to="/">Home</Link>
+				
 				
 				<div className="collapse navbar-collapse" id="mainNav">
+
 					<ul className="navbar-nav ms-auto align-items-md-center">
 						{/* Visitante*/}
 						{!isLogged && (
 							<>
-							  	<li className="nav-item">
-									<Link className="nav-link" to="/">Inicio</Link>
-								</li>
+							  	
+								<li className="nav-item"></li>
+								<li className="nav-item"><Link className="nav-link" to="/especialidades">Especialidades</Link></li>
+								<li className="nav-item"><Link className="nav-link" to="/equipoMedico">Equipo Médico</Link></li>
 								<li className="nav-item ms-md-2">
 									<button className="btn btn-primary" onClick={navega}>
 										Login
@@ -72,9 +70,8 @@ const  Navbar = () => {
 						{/* Navbar MÉDICO */}
             			{isLogged && role === "medico" && (
             			  <>
-            			    <li className="nav-item"><Link className="nav-link" to="/">Inicio</Link></li>
-            			    <li className="nav-item"><Link className="nav-link" to="/especialidades">Especialidades</Link></li>
-            			    <li className="nav-item"><Link className="nav-link" to="/equipo">Equipo Médico</Link></li>
+            			   <li className="nav-item"><Link className="nav-link" to="/especialidades">Especialidades</Link></li>
+								<li className="nav-item"><Link className="nav-link" to="/equipoMedico">Equipo Médico</Link></li>
             			    <li className="nav-item"><Link className="nav-link" to="/perfil">Mi_Perfil</Link></li>
             			    <li className="nav-item ms-md-2">
             			      <button className="btn btn-primary" onClick={logout}>Logout</button>
@@ -85,9 +82,8 @@ const  Navbar = () => {
 						{/* Navbar PACIENTE */}
             			{isLogged && role === "paciente" && (
             			  <>
-            			    <li className="nav-item"><Link className="nav-link" to="/">Inicio</Link></li>
-            			    <li className="nav-item"><Link className="nav-link" to="/especialidades">Especialidades</Link></li>
-            			    <li className="nav-item"><Link className="nav-link" to="/equipo">Equipo Médico</Link></li>
+            			   <li className="nav-item"><Link className="nav-link" to="/especialidades">Especialidades</Link></li>
+								<li className="nav-item"><Link className="nav-link" to="/equipoMedico">Equipo Médico</Link></li>
             			    <li className="nav-item"><Link className="nav-link" to="/area-paciente">Área Paciente</Link></li>
             			    <li className="nav-item"><Link className="nav-link" to="/perfil">Mi_Perfil</Link></li>
             			    <li className="nav-item ms-md-2">
