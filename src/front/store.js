@@ -24,6 +24,10 @@ export default function storeReducer(store, action = {}) {
         ...store,
         datosMedico: action.payload
       }
+            case "Logout":
+      return{
+        ...store, datosPaciente: null, datosMedico: null
+      }
 
    
       
