@@ -12,6 +12,7 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from api.seed import seed_data
 
 # from models import Person
 
@@ -75,5 +76,10 @@ def serve_any_other_file(path):
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
+    if ENV == "development":
+        
+       from api.seed import seed_data
+       seed_data(app) 
+            
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)

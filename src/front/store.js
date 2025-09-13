@@ -2,8 +2,9 @@ export const initialStore=()=>{
   return{
     message: null,
     datosPaciente:null,
-    datosMedico:null
-    
+    datosMedico:null,
+    especialidades:[],
+    medicos:[]
   }
 }
 
@@ -28,8 +29,14 @@ export default function storeReducer(store, action = {}) {
       return{
         ...store, datosPaciente: null, datosMedico: null
       }
-
-   
+            case "Especialidades":
+      return{
+        ...store, especialidades: action.payload
+      }
+     case "Medicos":
+      return{
+        ...store, medicos: action.payload
+      }
       
     default:
       throw Error('Unknown action.');

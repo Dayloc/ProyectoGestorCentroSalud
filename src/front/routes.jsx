@@ -14,6 +14,10 @@ import Register from "./pages/Register";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import ComponenteProtegidoPaciente from "./pages/ComponenteProtegidoPaciente";
 import ComponenteProtegidoMedico from "./pages/ComponenteProtegidoMedico";
+import EquipoMedico from "./pages/EquipoMedico";
+import Especialidades from "./pages/Especialidades";
+
+
 
 
 export const router = createBrowserRouter(
@@ -33,7 +37,8 @@ export const router = createBrowserRouter(
         <Route path="/demo" element={<Demo />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
+        <Route path="/equipoMedico" element={<EquipoMedico />} />
+        <Route path="/especialidades" element={<Especialidades />} />
 
           {/* Aquí pondremos solo las rutas protegidas */}
       <Route

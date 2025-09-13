@@ -1,10 +1,14 @@
 .navbar-custom {
-  background-color: #47a4df; /* azul tipo Bootstrap primary */
+  background-color:  #01065365; /* azul tipo Bootstrap primary */
+  color: rgb(27, 65, 233);
+  height: 50px;
 }
-
+.nav-link{
+  color: rgb(216, 184, 246);
+}
 .footer-custom {
-  background-color: #47a4df; /* un azul más oscuro para diferenciar */
-  color: #ffffff;
+  background-color: #1d1ba395; /* un azul más oscuro para diferenciar */
+  color:rgb(193, 130, 253);
 }
 
 .footer-custom a {
@@ -26,4 +30,24 @@ body{
 .card {
   background-color: rgba(255, 255, 255, 0.225); 
   backdrop-filter: blur(6px); 
+}
+.logo{
+  width: 50px;
+  height: 50px;
+  color: blue;
+}
+
+.espec{
+  background-color: rgba(0, 0, 87, 0.242);
+  margin: 30px;
+  border-radius: 15px;
+  
+
+}
+.titulos{
+  color: rgb(116, 35, 118);
+}
+.especialidad-list{
+  background-color: rgba(129, 127, 255, 0.262);
+  border-radius: 15px;
 }
