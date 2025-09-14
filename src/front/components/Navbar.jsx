@@ -1,100 +1,84 @@
 import { Link, useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
-import logo from "./../assets/img/logo!!.png"
+import logo from "../assets/img/logo!!.png";
 
-const  Navbar = () => {
+const Navbar = () => {
+  const navigate = useNavigate();
+  const { store, dispatch } = useGlobalReducer();
 
-	const navigate = useNavigate()
-	const { store, dispatch } = useGlobalReducer();
-	
-	const token = localStorage.getItem("token"); 
-	
-	//Sacamos el role del store
+  const token = localStorage.getItem("token");
+  // Obtenemos el rol primero del store, si no existe, de localStorage
+  const roleFromStore = store?.datosMedico ? "medico" : store?.datosPaciente ? "paciente" : null;
+  const role = roleFromStore || localStorage.getItem("role"); 
+  const isLogged = !!token && !!role;
 
-	const roleFormStore = store?.datosMedico
-		? "medico"
-		: store?.datosPaciente
-		? "paciente"
-		:null;
-	const role = roleFormStore || localStorage.getItem("role");
-	const isLogged = !!token && !!role;
+  const handleLogin = () => navigate("/login");
 
-	const navega = ()=> { 
-		navigate("/login") 
-	}
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    try {
+      dispatch({ type: "Logout" }); // Limpiar store
+    } catch {}
+    navigate("/");
+  };
 
-	const logout = ()=>{
-		localStorage.removeItem("token");
-		localStorage.removeItem("role");
-		try {
-			dispatch({ type: "Logout" }); //Limpiar datosPaciente/datosMedico 
-		} catch {}
-		navega("/");
-	};
+  // Determinar link a área protegida según rol
+  const protectedLink = role === "medico" ? "/dashboardMedico" : "/dashboardPaciente";
+  const protectedLabel = role === "medico" ? "Área Médico" : "Área Paciente";
 
-	return (
-			
-		<nav className="navbar navbar-expand-md navbar-light navbar-custom border-bottom">
-			<div className="container">
-				
-					
-					<Link className="navbar-brand d-flex flex-column align-items-center gap-2" href="/">
-					<img className="logo" src={logo} alt="" />
-					
-				</Link>
-				
-				
-			
-				
-		<Link className="nav-link" to="/">Home</Link>
-				
-				
-				<div className="collapse navbar-collapse" id="mainNav">
+  return (
+    <nav className="navbar navbar-expand-md navbar-light navbar-custom border-bottom">
+      <div className="container">
+        <Link className="navbar-brand d-flex flex-column align-items-center gap-2" to="/">
+          <img className="logo" src={logo} alt="Logo" />
+        </Link>
 
-					<ul className="navbar-nav ms-auto align-items-md-center">
-						{/* Visitante*/}
-						{!isLogged && (
-							<>
-							  	
-								<li className="nav-item"></li>
-								<li className="nav-item"><Link className="nav-link" to="/especialidades">Especialidades</Link></li>
-								<li className="nav-item"><Link className="nav-link" to="/equipoMedico">Equipo Médico</Link></li>
-								<li className="nav-item ms-md-2">
-									<button className="btn btn-primary" onClick={navega}>
-										Login
-									</button>
-								</li>	
-							</>
-						)}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#mainNav"
+          aria-controls="mainNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-						{/* Navbar MÉDICO */}
-            			{isLogged && role === "medico" && (
-            			  <>
-            			   <li className="nav-item"><Link className="nav-link" to="/especialidades">Especialidades</Link></li>
-								<li className="nav-item"><Link className="nav-link" to="/equipoMedico">Equipo Médico</Link></li>
-            			    <li className="nav-item"><Link className="nav-link" to="/perfil">Mi_Perfil</Link></li>
-            			    <li className="nav-item ms-md-2">
-            			      <button className="btn btn-primary" onClick={logout}>Logout</button>
-            			    </li>
-            			  </>
-            			)}
+        <div className="collapse navbar-collapse" id="mainNav">
+          <ul className="navbar-nav ms-auto align-items-md-center">
+            {/* Links comunes */}
+            <li className="nav-item">
+              <Link className="nav-link" to="/">Home</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/especialidades">Especialidades</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/equipoMedico">Equipo Médico</Link>
+            </li>
 
-						{/* Navbar PACIENTE */}
-            			{isLogged && role === "paciente" && (
-            			  <>
-            			   <li className="nav-item"><Link className="nav-link" to="/especialidades">Especialidades</Link></li>
-								<li className="nav-item"><Link className="nav-link" to="/equipoMedico">Equipo Médico</Link></li>
-            			    <li className="nav-item"><Link className="nav-link" to="/area-paciente">Área Paciente</Link></li>
-            			    <li className="nav-item"><Link className="nav-link" to="/perfil">Mi_Perfil</Link></li>
-            			    <li className="nav-item ms-md-2">
-            			      <button className="btn btn-primary" onClick={logout}>Logout</button>
-            			    </li>
-            			  </>
-            			)}
-					</ul>
-				</div>
-			</div>
-		</nav>
-	);
+            {/* Área protegida */}
+            {isLogged && (
+              <li className="nav-item">
+                <Link className="nav-link" to={protectedLink}>{protectedLabel}</Link>
+              </li>
+            )}
+
+            {/* Login / Logout */}
+            <li className="nav-item ms-md-2">
+              {isLogged ? (
+                <button className="btn btn-primary" onClick={handleLogout}>Logout</button>
+              ) : (
+                <button className="btn btn-primary" onClick={handleLogin}>Login</button>
+              )}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  );
 };
-export default Navbar
+
+export default Navbar;

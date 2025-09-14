@@ -13,7 +13,9 @@ from api.commands import setup_commands
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from api.seed import seed_data
-
+import click
+from flask.cli import with_appcontext
+from api.seed import seed_data
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
@@ -49,6 +51,7 @@ app.register_blueprint(api, url_prefix='/api')
 # Handle/serialize errors like a JSON object
 
 
+
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
@@ -64,6 +67,10 @@ def sitemap():
 
 # any other endpoint will try to serve it like a static file
 
+@app.cli.command("seed")
+@with_appcontext
+def seed():
+    seed_data(app)
 
 @app.route('/<path:path>', methods=['GET'])
 def serve_any_other_file(path):
