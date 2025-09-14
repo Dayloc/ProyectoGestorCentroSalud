@@ -139,7 +139,7 @@ export const getPaciente = async (dispatch) => {
   try {
     const token = localStorage.getItem("token"); 
 
-    const response = await fetch(`${urlBase}api/paciente/me`, { 
+    const response = await fetch(`${urlBase}/api/paciente/me`, { 
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -168,7 +168,7 @@ export const getMedico = async (dispatch) => {
   try {
     const token = localStorage.getItem("token"); 
 
-    const response = await fetch(`${urlBase}api/medico/me`, { 
+    const response = await fetch(`${urlBase}/api/medico/me`, { 
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -194,7 +194,7 @@ export const getMedico = async (dispatch) => {
 };
 export const getEspecialidades = async(dispatch)=>{
   try {
-    const response = await fetch(`${urlBase}api/medicos`)
+    const response = await fetch(`${urlBase}/api/medicos`)
     if(!response.ok){
       throw new Error("Error al optener los datos",response.status);      
     }
@@ -210,7 +210,7 @@ export const getEspecialidades = async(dispatch)=>{
 }
 export const getMedicosLista = async(dispatch)=>{
   try {
-    const response = await fetch(`${urlBase}api/medicos`)
+    const response = await fetch(`${urlBase}/api/medicos`)
     if(!response.ok){
       throw new Error("Error al optener los datos",response.status);      
     }
@@ -224,3 +224,4 @@ export const getMedicosLista = async(dispatch)=>{
   }
 
 }
+//fetch para citas, tanto para médicos como para pacientes
