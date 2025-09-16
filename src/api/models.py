@@ -355,3 +355,6 @@ class ActividadMedico(db.Model):
             "fecha": str(self.fecha),
             "medico_id": self.medico_id
         }
+        
+        
+        

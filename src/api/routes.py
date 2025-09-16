@@ -1,23 +1,23 @@
 from flask import Blueprint, request, jsonify
 from api.models import db, Paciente, Medico, Laboratorio, Analitica, HistorialMedico, Farmaco, AlergiaFarmaco, User, Cita, ActividadMedico
 import bcrypt
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt 
 from functools import wraps
+from datetime import datetime,timedelta
 
 api = Blueprint('api', __name__)
 
-# ----------------------
+
 # Helpers bcrypt
-# ----------------------
+
+
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
 def check_password(password: str, hashed: str) -> bool:
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
-
 # Decorador roles
-
 def roles_permitidos(*roles):
     def decorator(f):
         @wraps(f)
@@ -96,7 +96,6 @@ def get_mi_paciente():
     return jsonify(paciente.to_dict()), 200
 
 @api.route("/pacientes", methods=["GET"])
-@jwt_required()
 def get_pacientes():
     pacientes = Paciente.obtener_todos()
     return jsonify([p.to_dict() for p in pacientes])
@@ -143,13 +142,13 @@ def get_mi_medico():
     return jsonify(medico.to_dict())
 
 @api.route("/medicos", methods=["GET"])
-@jwt_required()
 def get_medicos():
     medicos = Medico.obtener_todos()
     return jsonify([m.to_dict() for m in medicos])
 
 
-# Crear actividad
+# Actividades de médicos
+
 @api.route("/medicos/<int:medico_id>/actividades", methods=["POST"])
 @roles_permitidos("medico")
 def crear_actividad(medico_id):
@@ -164,12 +163,13 @@ def crear_actividad(medico_id):
     db.session.commit()
     return jsonify(act.to_dict())
 
-# Obtener actividades de un médico
 @api.route("/medicos/<int:medico_id>/actividades", methods=["GET"])
 @roles_permitidos("medico")
 def obtener_actividades(medico_id):
     medico = Medico.obtener_por_id(medico_id)
     return jsonify([act.to_dict() for act in medico.actividades])
+
+
 # Laboratorios
 
 @api.route("/laboratorios", methods=["GET"])
@@ -247,7 +247,6 @@ def crear_farmaco():
 
 
 # Alergias
-
 @api.route("/pacientes/<int:paciente_id>/alergias", methods=["GET"])
 @roles_permitidos("paciente", "medico")
 def alergias_por_paciente(paciente_id):
@@ -263,3 +262,103 @@ def crear_alergia(paciente_id):
     data = request.json
     a = AlergiaFarmaco.crear(paciente_id=paciente_id, farmaco_id=data["farmaco_id"], nivel_reaccion=data["nivel_reaccion"])
     return jsonify(a.to_dict())
+
+
+#  FLUJO DE CITAS 
+
+
+#  Listar especialidades
+@api.route("/especialidades", methods=["GET"])
+@jwt_required()
+def listar_especialidades():
+    especialidades = db.session.query(Medico.especialidad).distinct().all()
+    return jsonify([e[0] for e in especialidades])
+
+# Listar médicos por especialidad
+@api.route("/medicos/especialidad", methods=["GET"])
+@jwt_required()
+def medicos_por_especialidad():
+    especialidad = request.args.get("especialidad")
+    if not especialidad:
+        return jsonify({"error": "Debes enviar la especialidad"}), 400
+    
+    medicos = Medico.query.filter_by(especialidad=especialidad).all()
+    return jsonify([m.to_dict() for m in medicos])
+
+# Mostrar citas disponibles de un médico
+
+@api.route("/medicos/<int:medico_id>/citas-disponibles", methods=["GET"])
+@jwt_required()
+def citas_disponibles(medico_id):
+    hoy = datetime.now().date()
+    dias_a_mostrar = 7  # próximos 7 días
+    horarios = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00"]  # ejemplo de horarios
+
+    citas_ocupadas = Cita.query.filter_by(medico_id=medico_id).filter(Cita.fecha >= hoy).all()
+    citas_ocupadas_set = set(f"{c.fecha} {c.hora}" for c in citas_ocupadas)
+
+    disponibles = []
+    for i in range(dias_a_mostrar):
+        dia = hoy + timedelta(days=i)
+        for h in horarios:
+            slot = f"{dia} {h}"
+            if slot not in citas_ocupadas_set:
+                disponibles.append({"fecha": str(dia), "hora": h})
+
+    return jsonify(disponibles)
+
+
+# Reservar cita (solo pacientes)
+@api.route("/citas/reservar", methods=["POST"])
+@roles_permitidos("paciente")
+def reservar_cita_api():
+    data = request.json
+    paciente_id = int(get_jwt_identity())  # paciente autenticado
+    medico_id = data.get("medico_id")
+    fecha = data.get("fecha")
+    motivo = data.get("motivo")
+
+    if not all([medico_id, fecha, motivo]):
+        return jsonify({"error": "Faltan datos para reservar la cita"}), 400
+
+    # Verificar que la cita no esté ocupada
+    cita_existente = Cita.query.filter_by(medico_id=medico_id, fecha=fecha).first()
+    if cita_existente:
+        return jsonify({"error": "Esta cita ya está ocupada"}), 400
+
+    # Crear la cita
+    cita = Cita.crear(fecha=fecha, motivo=motivo, paciente_id=paciente_id, medico_id=medico_id)
+    return jsonify(cita.to_dict()), 201
+
+
+# Reprogramar cita
+@api.route("/citas/<int:cita_id>/reprogramar", methods=["PUT"])
+@roles_permitidos("paciente")
+def reprogramar_cita(cita_id):
+    data = request.json
+    nueva_fecha = data.get("fecha")
+    nuevo_motivo = data.get("motivo")
+
+    if not nueva_fecha:
+        return jsonify({"error": "Se requiere la nueva fecha"}), 400
+
+    cita = Cita.query.get(cita_id)
+    if not cita:
+        return jsonify({"error": "Cita no encontrada"}), 404
+
+    paciente_id = int(get_jwt_identity())
+    if cita.paciente_id != paciente_id:
+        return jsonify({"error": "No puedes reprogramar esta cita"}), 403
+
+    # Verificar que no exista otra cita en esa fecha para el mismo médico
+    cita_existente = Cita.query.filter_by(medico_id=cita.medico_id, fecha=nueva_fecha).first()
+    if cita_existente:
+        return jsonify({"error": "Ya existe una cita en esa fecha"}), 400
+
+    cita.fecha = nueva_fecha
+    if nuevo_motivo:
+        cita.motivo = nuevo_motivo
+
+    db.session.commit()
+    return jsonify(cita.to_dict()), 200
+
