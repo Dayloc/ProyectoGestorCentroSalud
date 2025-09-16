@@ -224,4 +224,99 @@ export const getMedicosLista = async(dispatch)=>{
   }
 
 }
-//fetch para citas, tanto para médicos como para pacientes
+export const getCitasPaciente = async (dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${urlBase}/api/paciente/me`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) throw new Error("Error al obtener citas del paciente");
+
+    const data = await response.json();
+
+    dispatch({
+      type: "Citas_Paciente",
+      payload: data.citas || []
+    });
+
+    return data.citas || [];
+  } catch (error) {
+    console.error("Error getCitasPaciente:", error);
+    return [];
+  }
+};
+export const getCitasMedico = async (dispatch) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${urlBase}/api/medico/me`, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) throw new Error("Error al obtener citas del médico");
+
+    const data = await response.json();
+
+    dispatch({
+      type: "Citas_Medico",
+      payload: data.citas || []
+    });
+
+    return data.citas || [];
+  } catch (error) {
+    console.error("Error getCitasMedico:", error);
+    return [];
+  }
+};
+
+export const tomarCita = async ({ medico_id, fecha, motivo }) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`${urlBase}/api/citas/reservar`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ medico_id, fecha, motivo })
+    });
+
+    if (!response.ok) throw new Error("Error al reservar la cita");
+
+    const data = await response.json();
+    console.log("Cita reservada:", data);
+    return data;
+  } catch (error) {
+    console.error("Error tomarCita:", error);
+    throw error;
+  }
+};
+export const getCitasDisponibles = async (medicoId) => {
+  try {
+    const token = localStorage.getItem("token"); // obtener token del paciente
+    const response = await fetch(`${urlBase}/api/medicos/${medicoId}/citas-disponibles`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}` // importante para que el backend acepte la request
+      }
+    });
+
+    if (!response.ok) throw new Error("Error al obtener citas disponibles");
+
+    const data = await response.json();
+    return data; // lista de objetos de cita disponibles
+  } catch (error) {
+    console.error("Error getCitasDisponibles:", error);
+    return [];
+  }
+};
+
+

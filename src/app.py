@@ -13,9 +13,10 @@ from api.commands import setup_commands
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from api.seed import seed_data
+from datetime import timedelta
 import click
 from flask.cli import with_appcontext
-from api.seed import seed_data
+
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
@@ -26,7 +27,13 @@ app.url_map.strict_slashes = False
 CORS(app)  # Esto permite todas las rutas y todos los orígenes
 
 app.config["JWT_SECRET_KEY"] = "tu_clave_secreta"  # Cambia esto por una clave segura
+
+# Configurar expiración del token a 24 horas
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
 jwt = JWTManager(app)
+
+
+
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:
