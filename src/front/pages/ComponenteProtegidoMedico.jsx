@@ -2,10 +2,15 @@ import React, { useEffect, useState } from "react";
 import { getMedico } from "../services/fetchs";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import Doctorimg from "../assets/img/Doctor.png";
+import { useNavigate } from "react-router-dom";
 
 function ComponenteProtegidoMedico() {
   const { store, dispatch } = useGlobalReducer();
   const { datosMedico } = store;
+
+
+  const navigate = useNavigate()
+
 
   const [citas, setCitas] = useState([]);
   const [openSections, setOpenSections] = useState({
@@ -80,7 +85,7 @@ function ComponenteProtegidoMedico() {
               <div>
                 <button
                   className="btn btn-primary btn-lg rounded-pill w-100"
-                  onClick={() => toggleSection("agenda")}
+                  onClick={() => navigate(`/actividadesMedico/${datosMedico.id}`)}
                 >
                   Agenda de Actividades
                 </button>
