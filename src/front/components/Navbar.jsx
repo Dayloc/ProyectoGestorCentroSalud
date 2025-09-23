@@ -45,13 +45,11 @@ const Navbar = () => {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-
+      <Link className="nav-link" to="/">Home</Link>
         <div className="collapse navbar-collapse" id="mainNav">
           <ul className="navbar-nav ms-auto align-items-md-center">
             {/* Links comunes */}
-            <li className="nav-item">
-              <Link className="nav-link" to="/">Home</Link>
-            </li>
+            
             <li className="nav-item">
               <Link className="nav-link" to="/especialidades">Especialidades</Link>
             </li>

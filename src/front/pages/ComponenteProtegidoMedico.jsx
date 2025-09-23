@@ -87,13 +87,23 @@ function ComponenteProtegidoMedico() {
                   className="btn btn-primary btn-lg rounded-pill w-100"
                   onClick={() => navigate(`/actividadesMedico/${datosMedico.id}`)}
                 >
-                  Agenda de Actividades
+                  Agendar actividad
                 </button>
                 {openSections.agenda && (
                   <div className="bg-light p-3 rounded mt-2">
                     <p>Contenido de agenda de actividades...</p>
                   </div>
                 )}
+              </div>
+               <div>
+                <button
+                  className="btn btn-primary btn-lg rounded-pill w-100"
+                 onClick={()=>navigate(`/agendaActividades/${datosMedico.id}`)}
+                >
+                  Agenda de actividades
+                </button>
+               
+             
               </div>
 
               <div>

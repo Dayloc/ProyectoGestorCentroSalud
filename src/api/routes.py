@@ -3,7 +3,8 @@ from api.models import db, Paciente, Medico, Laboratorio, Analitica, HistorialMe
 import bcrypt
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt 
 from functools import wraps
-from datetime import datetime,timedelta
+
+from datetime import datetime, date, time,timedelta
 
 api = Blueprint('api', __name__)
 
@@ -149,24 +150,47 @@ def get_medicos():
 
 # Actividades de médicos
 
+
+# Actividades de médicos
 @api.route("/medicos/<int:medico_id>/actividades", methods=["POST"])
 @roles_permitidos("medico")
 def crear_actividad(medico_id):
     data = request.json
+    
+    # Validar que vengan todos los campos requeridos
+    for campo in ["titulo", "fecha_inicio", "fecha_fin"]:
+        if campo not in data:
+            return jsonify({"error": f"Falta el campo {campo}"}), 400
+
+    # Convertir strings a datetime
+    try:
+        fecha_inicio = datetime.strptime(data["fecha_inicio"], "%Y-%m-%dT%H:%M")  # ISO-like
+        fecha_fin = datetime.strptime(data["fecha_fin"], "%Y-%m-%dT%H:%M")
+    except ValueError as e:
+        return jsonify({"error": f"Formato inválido: {str(e)}"}), 400
+
     act = ActividadMedico(
         titulo=data["titulo"],
-        descripcion=data.get("descripcion"),
-        fecha=data["fecha"],
+        descripcion=data.get("descripcion", ""),
+        fecha_inicio=fecha_inicio,
+        fecha_fin=fecha_fin,
         medico_id=medico_id
     )
+
     db.session.add(act)
     db.session.commit()
-    return jsonify(act.to_dict())
+    return jsonify(act.to_dict()), 201
+
+
+
 
 @api.route("/medicos/<int:medico_id>/actividades", methods=["GET"])
 @roles_permitidos("medico")
 def obtener_actividades(medico_id):
     medico = Medico.obtener_por_id(medico_id)
+    if not medico:
+        return jsonify({"error": "Médico no encontrado"}), 404
+
     return jsonify([act.to_dict() for act in medico.actividades])
 
 

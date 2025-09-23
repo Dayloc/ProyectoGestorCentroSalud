@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Boolean, Date, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import datetime
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -336,13 +337,16 @@ class AlergiaFarmaco(db.Model):
         }
 
 # ===============ActividadesMedico===================
+from datetime import datetime
+
 class ActividadMedico(db.Model):
     __tablename__ = "actividades_medico"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     titulo: Mapped[str] = mapped_column(String(120), nullable=False)
     descripcion: Mapped[str] = mapped_column(Text, nullable=True)
-    fecha: Mapped[datetime.date] = mapped_column(nullable=False)
+    fecha_inicio: Mapped[datetime] = mapped_column(nullable=False)
+    fecha_fin: Mapped[datetime] = mapped_column(nullable=False)
 
     medico_id: Mapped[int] = mapped_column(ForeignKey("medicos.id"), nullable=False)
     medico: Mapped["Medico"] = relationship("Medico", back_populates="actividades")
@@ -352,9 +356,10 @@ class ActividadMedico(db.Model):
             "id": self.id,
             "titulo": self.titulo,
             "descripcion": self.descripcion,
-            "fecha": str(self.fecha),
+            "fecha_inicio": self.fecha_inicio.isoformat(),
+            "fecha_fin": self.fecha_fin.isoformat(),
             "medico_id": self.medico_id
         }
-        
+
         
         
