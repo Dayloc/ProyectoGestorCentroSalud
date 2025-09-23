@@ -16,6 +16,8 @@ import ComponenteProtegidoPaciente from "./pages/ComponenteProtegidoPaciente";
 import ComponenteProtegidoMedico from "./pages/ComponenteProtegidoMedico";
 import EquipoMedico from "./pages/EquipoMedico";
 import Especialidades from "./pages/Especialidades";
+import AgendaActividadesMédico from "./pages/AgendaActividadesMédico";
+import AgendaDeActividades from "./pages/AgendaDeActividades";
 
 
 
@@ -39,6 +41,7 @@ export const router = createBrowserRouter(
         <Route path="/register" element={<Register />} />
         <Route path="/equipoMedico" element={<EquipoMedico />} />
         <Route path="/especialidades" element={<Especialidades />} />
+        <Route path="/agendaActividades/:id" element={<AgendaDeActividades />} />
 
           {/* Aquí pondremos solo las rutas protegidas */}
       <Route
@@ -46,6 +49,7 @@ export const router = createBrowserRouter(
         element={
           <ProtectedRoute>
             <ComponenteProtegidoPaciente />
+            
           </ProtectedRoute>
         }
       />
@@ -57,7 +61,15 @@ export const router = createBrowserRouter(
           </ProtectedRoute>
         }
       />
-       
+      <Route
+              path="/actividadesMedico/:id"
+              element={
+                <ProtectedRoute>
+                  <AgendaActividadesMédico />
+                </ProtectedRoute>
+              }
+            />
+    
       </Route>
     )
 );
